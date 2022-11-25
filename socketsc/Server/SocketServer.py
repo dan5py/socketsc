@@ -52,3 +52,15 @@ class SocketServer:
 
     def on(self, event_name, event_exec):
         self.server.event_manager.add_event(event_name, event_exec)
+
+    def emit(self, event_name, data):
+        """
+        Emit an event to all connected clients.
+
+        :param event_name: The event name
+        :param data: The data to send
+        :return:
+        """
+        all_clients = self.server.client_manager.get_clients()
+        for client in all_clients:
+            client.emit(event_name, data)
