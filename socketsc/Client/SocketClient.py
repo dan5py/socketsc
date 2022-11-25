@@ -25,9 +25,11 @@ class SocketClient:
         self.connection_event.set()
         self.connected = True
         while True:
+            if not self.connected:
+                break
             data = self.socket.recv(constants.BUFFER_SIZE)
             if not data:
-                break
+                continue
             [event, data] = json.loads(data.decode("utf-8"))
             self.event_manager.call_event(event, data, self)
 
@@ -46,8 +48,17 @@ class SocketClient:
     def on(self, event, callback):
         """
         Register an event
+
         :param event: The event name
         :param callback: The function to register
         :return:
         """
         self.event_manager.add_event(event, callback)
+
+    def close(self):
+        """
+        Close the socket
+        :return:
+        """
+        self.connected = False
+        self.socket.close()
