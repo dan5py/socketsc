@@ -24,6 +24,11 @@ class SocketClient:
         self.thread.start()
 
     def connect(self):
+        """
+        Connect to the server and start listening for events
+
+        :return:
+        """
         self.socket.connect(self.server_address)
         self.connection_event.set()
         self.connected = True

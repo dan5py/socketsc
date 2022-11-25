@@ -6,7 +6,7 @@ if TYPE_CHECKING:
 
 import socketsc
 
-server = socketsc.SocketServer(("localhost", 8080), socketsc.SOCK_TCP)
+server = socketsc.SocketServer(("localhost", 8080), address_family=socketsc.AF_INET, sock_type=socketsc.SOCK_TCP)
 
 print("Server listening on port 8080")
 
@@ -17,6 +17,7 @@ def on_question(socket: ServerSocketWrapper, data):
     socket.emit("answer", input("Insert answer: "))
     # socket.connection.close()
     # socket.connection.shutdown(socketsc.SHUT_WR)
+    server.emit("broadcast", "Hello")
 
 
 server.on("question", on_question)
