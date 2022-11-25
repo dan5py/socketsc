@@ -6,7 +6,7 @@ DESCRIPTION = "Simple socket library with events management."
 KEYWORDS = "Server Client Socket Sockets Event TCP"
 URL = "https://gitlab.com/dan5py/socketsc"
 AUTHOR = "Dan5py"
-LICENSE = "Apache License 2.0"
+LICENSE = "MIT"
 REQUIRES_PYTHON = ">=3.8.0"
 EXTRAS = {}
 
