@@ -9,15 +9,18 @@ class SocketClient:
     """
     Socket client.
     """
-    def __init__(self, server_address, socket_family, sock_type):
+
+    daemon_thread = False
+
+    def __init__(self, server_address, address_family, sock_type):
         self.server_address = server_address
-        self.socket_family = socket_family
+        self.address_family = address_family
         self.sock_type = sock_type
-        self.socket = socket.socket(self.socket_family, self.sock_type)
+        self.socket = socket.socket(self.address_family, self.sock_type)
         self.event_manager = ClientEventManager()
         self.connected = False
         self.connection_event = threading.Event()
-        self.thread = threading.Thread(target=self.connect)
+        self.thread = threading.Thread(target=self.connect, daemon=self.daemon_thread)
         self.thread.start()
 
     def connect(self):
