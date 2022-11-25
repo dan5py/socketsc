@@ -48,8 +48,8 @@ class SocketServer:
     def __init__(
         self,
         address,
-        sock_type,
         address_family,
+        sock_type
     ):
         if sock_type != socketsc.constants.SOCK_TCP:  # and sock_type != self.SOCK_UDP:
             raise ValueError("Unsupported socket type")
