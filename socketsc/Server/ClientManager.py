@@ -5,6 +5,7 @@ if TYPE_CHECKING:
     from socketsc.Server.SocketTCPRequestHandler import SocketTCPRequestHandler
 
 import uuid
+from socketsc.Server.ServerSocketWrapper import ServerSocketWrapper
 
 
 class ClientManager:
@@ -42,7 +43,7 @@ class ClientManager:
         :param client_id:
         :return: The client if exists, None otherwise
         """
-        return self.clients.get(client_id)
+        return ServerSocketWrapper(self.clients.get(client_id))
 
     def get_clients(self):
         """
@@ -50,4 +51,4 @@ class ClientManager:
 
         :return: The connected clients
         """
-        return self.clients.values()
+        return [ServerSocketWrapper(client) for client in self.clients.values()]
