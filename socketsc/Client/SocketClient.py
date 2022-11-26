@@ -63,6 +63,25 @@ class SocketClient:
         """
         self.event_manager.add_event(event, callback)
 
+    def remove_listener(self, event, callback):
+        """
+        Remove a listener for the given event
+
+        :param event: The event name
+        :param callback: The function to remove
+        :return:
+        """
+        self.event_manager.remove_listener(event, callback)
+
+    def remove_all_listeners(self, event):
+        """
+        Remove all listeners for the given event
+
+        :param event: The event name
+        :return:
+        """
+        self.event_manager.remove_all_listeners(event)
+
     def close(self):
         """
         Close the socket

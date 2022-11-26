@@ -79,6 +79,25 @@ class SocketServer:
         for client in all_clients:
             client.emit(event_name, data)
 
+    def remove_listener(self, event_name, event_exec):
+        """
+        Remove a listener for the given event.
+
+        :param event_name: The event name
+        :param event_exec: The function to remove
+        :return:
+        """
+        self.server.event_manager.remove_listener(event_name, event_exec)
+
+    def remove_all_listeners(self, event_name):
+        """
+        Remove all listeners for the given event.
+
+        :param event_name: The event name
+        :return:
+        """
+        self.server.event_manager.remove_all_listeners(event_name)
+
     def on_connection(self, connection: ServerSocketWrapper, client_id,):
         """
         Called when a client connects to the server.

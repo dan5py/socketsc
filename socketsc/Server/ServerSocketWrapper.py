@@ -27,6 +27,23 @@ class ServerSocketWrapper:
         json_data = json.dumps([event, data])
         send_msg(self.sc.request, json_data.encode("utf-8"))
 
+    def remove_listener(self, event_name: str):
+        """
+        Remove a listener
+
+        :param event_name: The event name
+        :return:
+        """
+        self.sc.server.event_manager.remove_listener(event_name)
+
+    def remove_all_listeners(self):
+        """
+        Remove all listeners
+
+        :return:
+        """
+        self.sc.server.event_manager.remove_all_listeners()
+
     @property
     def client_address(self):
         """
