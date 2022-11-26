@@ -18,7 +18,7 @@ class SocketTCPRequestHandler(socketserver.StreamRequestHandler):
         server: ThreadedTCPServer = self.server
         client_manager = server.client_manager
         client_id = client_manager.add_client(self)
-        Logger.info(f"Client connected from {self.client_address} with id {client_id}")
+        server.event_manager.call_event("connection", client_id, self)
         try:
             while True:
                 raw_data = self.request.recv(1024)
@@ -32,4 +32,4 @@ class SocketTCPRequestHandler(socketserver.StreamRequestHandler):
             client_manager.remove_client(client_id)
             self.connection.shutdown(socket.SHUT_RDWR)
             self.connection.close()
-            Logger.info(f"Client {client_id} disconnected from {self.client_address}")
+            server.event_manager.call_event("disconnect", client_id, self)

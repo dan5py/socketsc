@@ -4,6 +4,8 @@ from socketsc.Server.SocketTCPRequestHandler import SocketTCPRequestHandler
 from socketsc.Server.SocketUDPRequestHandler import SocketUDPRequestHandler
 from socketsc.Server.ClientManager import ClientManager
 from socketsc.Server.ServerEventManager import ServerEventManager
+from socketsc.Server.ServerSocketWrapper import ServerSocketWrapper
+from socketsc.Logger import Logger
 
 
 class _TCPServer(socketserver.TCPServer):
@@ -57,6 +59,8 @@ class SocketServer:
         handler = SocketTCPRequestHandler
         # if sock_type == socketsc.constants.SOCK_TCP:
         self.server = ThreadedTCPServer(address, address_family, handler, True, self.daemon_threads)
+        self.server.event_manager.add_event("connection", self.on_connection)
+        self.server.event_manager.add_event("disconnect", self.on_disconnect)
         # elif sock_type == socketsc.constants.SOCK_UDP:
         #     self.server = ThreadedUDPServer(address, handler)
 
@@ -89,3 +93,15 @@ class SocketServer:
         all_clients = self.server.client_manager.get_clients()
         for client in all_clients:
             client.emit(event_name, data)
+
+    def on_connection(self, connection: ServerSocketWrapper, client_id,):
+        """
+        Called when a client connects to the server.
+        """
+        Logger.info(f"Client {client_id} connected from {connection.client_address}")
+
+    def on_disconnect(self, connection: ServerSocketWrapper, client_id):
+        """
+        Called when a client disconnects from the server.
+        """
+        Logger.info(f"Client {client_id} disconnected")
