@@ -9,12 +9,12 @@ class ClientEventManager:
     """
         Event manager for socket client.
     """
-    events: dict[str, list[Callable[[SocketClient], Any]]]
+    events: dict[str, list[Callable[[SocketClient, Any], Any]]]
 
     def __init__(self):
         self.events = {}
 
-    def add_event(self, event_name: str, event_exec: Callable[[SocketClient], Any]):
+    def add_event(self, event_name: str, event_exec: Callable[[SocketClient, Any], Any]):
         """
             Register a function for an event
 

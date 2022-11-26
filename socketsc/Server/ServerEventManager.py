@@ -11,12 +11,12 @@ class ServerEventManager:
     """
     Event manager for socket server.
     """
-    events: dict[str, list[Callable[[SocketTCPRequestHandler], Any]]]
+    events: dict[str, list[Callable[[ServerSocketWrapper, Any], Any]]]
 
     def __init__(self):
         self.events = {}
 
-    def add_event(self, event_name: str, event_exec: Callable[[SocketTCPRequestHandler], Any]):
+    def add_event(self, event_name: str, event_exec: Callable[[ServerSocketWrapper, Any], Any]):
         """
         Register a function for an event
 
