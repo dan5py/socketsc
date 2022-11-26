@@ -5,6 +5,7 @@ if TYPE_CHECKING:
     from socketsc.Server.SocketTCPRequestHandler import SocketTCPRequestHandler
 
 import json
+from socketsc.utils import send_msg
 
 
 class ServerSocketWrapper:
@@ -24,7 +25,7 @@ class ServerSocketWrapper:
         :return:
         """
         json_data = json.dumps([event, data])
-        self.sc.connection.sendall(json_data.encode("utf-8"))
+        send_msg(self.sc.request, json_data.encode("utf-8"))
 
     @property
     def client_address(self):

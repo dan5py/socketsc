@@ -1,8 +1,8 @@
 import socket
 import threading
-import socketsc.constants as constants
-from socketsc.Client.ClientEventManager import ClientEventManager
 import json
+from socketsc.Client.ClientEventManager import ClientEventManager
+from socketsc.utils import recv_msg, send_msg
 
 
 class SocketClient:
@@ -35,7 +35,7 @@ class SocketClient:
         while True:
             if not self.connected:
                 break
-            data = self.socket.recv(constants.BUFFER_SIZE)
+            data = recv_msg(self.socket)
             if not data:
                 continue
             [event, data] = json.loads(data.decode("utf-8"))
@@ -51,7 +51,7 @@ class SocketClient:
         """
         self.connection_event.wait()
         json_data = json.dumps([event, data])
-        self.socket.sendall(json_data.encode("utf-8"))
+        send_msg(self.socket, json_data.encode("utf-8"))
 
     def on(self, event, callback):
         """

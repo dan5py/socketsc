@@ -7,6 +7,7 @@ if TYPE_CHECKING:
 import socketserver
 import socket
 import json
+from socketsc.utils import recv_msg
 from socketsc.Logger import Logger
 
 
@@ -21,7 +22,7 @@ class SocketTCPRequestHandler(socketserver.StreamRequestHandler):
         server.event_manager.call_event("connection", client_id, self)
         try:
             while True:
-                raw_data = self.request.recv(1024)
+                raw_data = recv_msg(self.request)
                 if not raw_data:
                     break
                 [event, data] = json.loads(raw_data.decode("utf-8"))
