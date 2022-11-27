@@ -46,8 +46,6 @@ class SocketServer:
             raise ValueError("Unsupported socket type")
         handler = SocketTCPRequestHandler
         self.server = ThreadedTCPServer(address, address_family, handler, True, self.daemon_threads)
-        self.server.event_manager.add_event("connection", self.on_connection)
-        self.server.event_manager.add_event("disconnect", self.on_disconnect)
 
     def serve(self):
         """
@@ -97,15 +95,3 @@ class SocketServer:
         :return:
         """
         self.server.event_manager.remove_all_listeners(event_name)
-
-    def on_connection(self, connection: ServerSocketWrapper, client_id,):
-        """
-        Called when a client connects to the server.
-        """
-        Logger.info(f"Client {client_id} connected from {connection.client_address}")
-
-    def on_disconnect(self, connection: ServerSocketWrapper, client_id):
-        """
-        Called when a client disconnects from the server.
-        """
-        Logger.info(f"Client {client_id} disconnected")
