@@ -14,6 +14,15 @@ class ClientEventManager:
     def __init__(self):
         self.events = {}
 
+    def has_event(self, event_name: str):
+        """
+        Check if the given event has listeners
+
+        :param event_name: The event name
+        :return:
+        """
+        return event_name in self.events
+
     def add_event(self, event_name: str, event_exec: Callable[[SocketClient, Any], Any]):
         """
             Register a function for an event
