@@ -32,14 +32,27 @@ class SocketClient:
         self.socket.connect(self.server_address)
         self.connection_event.set()
         self.connected = True
-        while True:
-            if not self.connected:
-                break
-            data = recv_msg(self.socket)
-            if not data:
-                continue
-            [event, data] = json.loads(data.decode("utf-8"))
-            self.event_manager.call_event(event, data, self)
+        self.event_manager.call_event("connect", None, self)
+        try:
+            while True:
+                if not self.connected:
+                    break
+                data = recv_msg(self.socket)
+                if not data:
+                    break
+                [event, data] = json.loads(data.decode("utf-8"))
+                self.event_manager.call_event(event, data, self)
+                self.event_manager.call_event("*", (event, data), self)
+        except (ConnectionResetError, BrokenPipeError):
+            pass
+        except Exception as err:
+            if self.event_manager.has_event("error"):
+                self.event_manager.call_event("error", err, self)
+            else:
+                raise err
+        finally:
+            self.close()
+            self.event_manager.call_event("disconnect", None, self)
 
     def emit(self, event, data):
         """

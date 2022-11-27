@@ -27,8 +27,14 @@ class SocketTCPRequestHandler(socketserver.StreamRequestHandler):
                     break
                 [event, data] = json.loads(raw_data.decode("utf-8"))
                 server.event_manager.call_event(event, data, self)
+                server.event_manager.call_event("*", (event, data), self)
         except (ConnectionResetError, BrokenPipeError):
             pass
+        except Exception as err:
+            if server.event_manager.has_event("error"):
+                server.event_manager.call_event("error", err, self)
+            else:
+                raise err
         finally:
             client_manager.remove_client(client_id)
             self.connection.shutdown(socket.SHUT_RDWR)
