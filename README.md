@@ -1,21 +1,19 @@
-![](https://i.imgur.com/aVhWeoh.png)
+!["socketsc"](https://i.imgur.com/aVhWeoh.png)
 
 A simple socket library with events management.
 
-
 ## Installation
+
 ```bash
 pip install socketsc
 ```
-or from source
-```bash
-python3 setup.py install
-```
 
 ## Usage
+
 Simple client and server implementation.
 
 ### Server
+
 ```python
 import socketsc
 
@@ -30,7 +28,9 @@ def on_question(socket: socketsc.ServerSocketWrapper, data):
 server.on("question", on_question)
 server.serve()
 ```
+
 ### Client
+
 ```python
 import socketsc
 
