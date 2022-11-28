@@ -1,37 +1,26 @@
-from setuptools import setup, find_packages
+from setuptools import setup
+import pathlib
+from src.socketsc.version import version
 
-PACKAGE_NAME = "socketsc"
-VERSION = "1.0.0"
-DESCRIPTION = "Simple socket library with events management."
-KEYWORDS = "Server Client Socket Sockets Event TCP"
-URL = "https://gitlab.com/dan5py/socketsc"
-AUTHOR = "Dan5py"
-LICENSE = "MIT"
-REQUIRES_PYTHON = ">=3.8.0"
-EXTRAS = {}
+ROOT_DIR = pathlib.Path(__file__).parent
 
-with open("README.md", "r", encoding="utf-8") as f:
-    long_description = f.read()
-
-# with open("requirements.txt", "r") as f:
-#     requirements = [line.strip() for line in f.readlines()]
-requirements = []
+packages = ['socketsc']
+long_description = (ROOT_DIR / "README.rst").read_text()
 
 setup(
-    name=PACKAGE_NAME,
-    version=VERSION,
-    description=DESCRIPTION,
+    name="socketsc",
+    version=version,
+    description="Simple socket library for client/server with events management.",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    keywords=KEYWORDS,
-    license=LICENSE,
-    author=AUTHOR,
-    python_requires=REQUIRES_PYTHON,
-    url=URL,
-    packages=find_packages(include=f"{PACKAGE_NAME}.*"),
-    install_requires=requirements,
-    extras_require=EXTRAS,
+    keywords="server client socket event tcp",
+    license="MIT",
+    author="Dan5py",
+    python_requires=">=3.8.0",
+    url="https://gitlab.com/dan5py/socketsc",
+    package_dir={"": "src"},
     include_package_data=True,
+    requires=['wheel'],
     classifiers=[
         "License :: OSI Approved :: Apache Software License",
         "Intended Audience :: Developers",
@@ -42,5 +31,6 @@ setup(
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
     ],
 )
