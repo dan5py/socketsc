@@ -1,26 +1,27 @@
 .. image:: https://i.imgur.com/aVhWeoh.png
     :alt: socketsc
-    :align: center
 
-==================
+------------
 
-.. image:: https://img.shields.io/pypi/l/socketsc
+|license| |version| |pyversion| |downloads| |issues|
+
+.. |license| image:: https://img.shields.io/pypi/l/socketsc
    :target: https://pypi.org/project/socketsc/
    :alt: PyPI - License
 
-.. image:: https://img.shields.io/pypi/v/socketsc
+.. |version| image:: https://img.shields.io/pypi/v/socketsc
    :target: https://pypi.org/project/socketsc/
    :alt: PyPi - Version
 
-.. image:: https://img.shields.io/pypi/pyversions/socketsc
+.. |pyversion| image:: https://img.shields.io/pypi/pyversions/socketsc
    :target: https://pypi.org/project/socketsc/
    :alt: PyPI - Python Version
 
-.. image:: https://img.shields.io/pypi/dm/socketsc
+.. |downloads| image:: https://img.shields.io/pypi/dm/socketsc
    :target: https://pypi.org/project/socketsc/
    :alt: PyPI - Downloads
 
-.. image:: https://img.shields.io/gitlab/issues/open/dan5py/socketsc
+.. |issues| image:: https://img.shields.io/gitlab/issues/open/dan5py/socketsc
    :target: https://gitlab.com/dan5py/socketsc/-/issues
    :alt: GitLab issues
 
@@ -28,19 +29,19 @@
 A simple socket library with events management.
 
 Installation
-############
+------------
 
 .. code-block:: bash
 
     pip install socketsc
 
 Usage
-#####
+-----
 
 Simple client and server implementation.
 
 Server
-******
+~~~~~~
 
 .. code-block:: python
 
@@ -58,7 +59,7 @@ Server
     server.serve()
 
 Client
-******
+~~~~~~
 
 .. code-block:: python
 
