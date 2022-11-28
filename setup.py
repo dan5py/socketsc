@@ -22,7 +22,7 @@ setup(
     include_package_data=True,
     requires=['wheel'],
     classifiers=[
-        "License :: OSI Approved :: Apache Software License",
+        "License :: OSI Approved :: MIT License",
         "Intended Audience :: Developers",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
