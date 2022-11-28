@@ -9,6 +9,11 @@ from .constants import *
 from .utils import recv_msg, send_msg
 
 
+__all__ = [
+    'SocketClient',
+    'ClientEventManager',
+]
+
 class SocketClient:
     """
     Socket client.

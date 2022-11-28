@@ -1,6 +1,12 @@
 import os
 
 
+__all__ = [
+    'Logger',
+    'Chalk'
+]
+
+
 class Chalk:
     red = "\033[91m"
     green = "\033[92m"

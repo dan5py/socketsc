@@ -1,4 +1,5 @@
-import socketsc.server as socketsc
+import socketsc
+
 
 server = socketsc.SocketServer(("localhost", 8080), address_family=socketsc.AF_INET, sock_type=socketsc.SOCK_TCP)
 
