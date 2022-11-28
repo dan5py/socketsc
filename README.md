@@ -15,7 +15,7 @@ Simple client and server implementation.
 ### Server
 
 ```python
-import socketsc.server as socketsc
+import socketsc
 
 server = socketsc.SocketServer(("localhost", 8080), address_family=socketsc.AF_INET, sock_type=socketsc.SOCK_TCP)
 
@@ -32,7 +32,7 @@ server.serve()
 ### Client
 
 ```python
-import socketsc.client as socketsc
+import socketsc
 
 server_address = ("localhost", 8080)
 sock = socketsc.SocketClient(server_address, address_family=socketsc.AF_INET, sock_type=socketsc.SOCK_TCP)
