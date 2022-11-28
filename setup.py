@@ -5,7 +5,7 @@ from src.socketsc.version import version
 ROOT_DIR = pathlib.Path(__file__).parent
 
 packages = ['socketsc']
-long_description = (ROOT_DIR / "README.rst").read_text()
+long_description = (ROOT_DIR / "README.md").read_text()
 
 setup(
     name="socketsc",
