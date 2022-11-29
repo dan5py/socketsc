@@ -31,11 +31,18 @@ socketsc
    :maxdepth: 2
    :caption: Contents:
 
+.. warning::
+
+   This is a work in progress. The API is not stable and may change at any time.
+
+:mod:`socketsc` is a Python library for creating socket clients and servers.
+It features an events management system that allows you to easily create and handle events both on the client and server side.
+
+Example of a simple client:
+
+.. literalinclude:: ../../example/client.py
 
 
-Indices and tables
-==================
+And a simple server:
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+.. literalinclude:: ../../example/server.py
