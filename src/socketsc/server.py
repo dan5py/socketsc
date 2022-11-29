@@ -94,6 +94,7 @@ class SocketTCPRequestHandler(socketserver.StreamRequestHandler):
         server: ThreadedTCPServer = self.server
         client_manager = server.client_manager
         client_id = client_manager.add_client(self)
+        client = client_manager.get_client(client_id)
         server.event_manager.call_event("connection", client_id, self)
         try:
             while True:
@@ -101,8 +102,12 @@ class SocketTCPRequestHandler(socketserver.StreamRequestHandler):
                 if not raw_data:
                     break
                 [event, data] = json.loads(raw_data.decode("utf-8"))
-                server.event_manager.call_event(event, data, self)
-                server.event_manager.call_event("message", (event, data), self)
+                # Global event
+                server.event_manager.call_event(event, data, self, client.event_manager)
+                # Local event only for this client
+                client.event_manager.call_event(event, data, self, client.event_manager)
+                # Global message event
+                server.event_manager.call_event("message", (event, data), self, client.event_manager)
         except (ConnectionResetError, ConnectionAbortedError, BrokenPipeError):
             pass
         except Exception as err:
@@ -145,7 +150,7 @@ class ClientManager:
         :return: The client uid
         """
         client_id = uuid.uuid4().hex
-        self.clients[client_id] = client
+        self.clients[client_id] = (client, ServerEventManager())
         return client_id
 
     def remove_client(self, client_id):
@@ -164,7 +169,10 @@ class ClientManager:
         :param client_id:
         :return: The client if exists, None otherwise
         """
-        return ServerSocketWrapper(self.clients.get(client_id))
+
+        if client_id in self.clients:
+            return ServerSocketWrapper(sc=self.clients[client_id][0], event_manager=self.clients[client_id][1])
+        return None
 
     def get_clients(self):
         """
@@ -172,7 +180,7 @@ class ClientManager:
 
         :return: The connected clients
         """
-        return [ServerSocketWrapper(client) for client in self.clients.values()]
+        return [ServerSocketWrapper(sc=client[0], event_manager=client[1]) for client in self.clients.values()]
 
 
 class ServerEventManager:
@@ -205,18 +213,20 @@ class ServerEventManager:
         current_events.append(event_exec)
         self.events[event_name] = current_events.copy()
 
-    def call_event(self, event_name: str, data: Any, connection: SocketTCPRequestHandler):
+    def call_event(self, event_name: str, data: Any, connection: SocketTCPRequestHandler,
+                   event_manager: ServerEventManager = None):
         """
         Call all the functions registered on the given event
 
         :param event_name: The event name
         :param data: The data to pass to the functions
         :param connection: The socket connection
+        :param event_manager: The event manager for the client
         :return:
         """
         current_events: list = self.events.get(event_name, [])
         for event in current_events:
-            event(ServerSocketWrapper(connection), data)
+            event(ServerSocketWrapper(connection, event_manager), data)
 
     def remove_listener(self, event_name: str, event_exec: Callable[[ServerSocketWrapper, Any], Any]):
         """
@@ -253,12 +263,13 @@ class ServerSocketWrapper:
     Wrapper for SocketTCPRequestHandler.
     This class is used when an event is called on server side.
     """
-    def __init__(self, sc: SocketTCPRequestHandler):
+    def __init__(self, sc: SocketTCPRequestHandler, event_manager: ServerEventManager):
         self.sc = sc
+        self.event_manager = event_manager
 
     def emit(self, event, data=None):
         """
-        Emit an event
+        Emit an event to the client
 
         :param event: The event name
         :param data: The data to send
@@ -267,7 +278,17 @@ class ServerSocketWrapper:
         json_data = json.dumps([event, data])
         send_msg(self.sc.request, json_data.encode("utf-8"))
 
-    def remove_listener(self, event_name: str):
+    def on(self, event: str, event_exec: Callable[[ServerSocketWrapper, Any], Any]):
+        """
+        Register a function for an event for this client
+
+        :param event: The event name
+        :param event_exec: The function to execute
+        :return:
+        """
+        self.event_manager.add_event(event, event_exec)
+
+    def remove_listener(self, event: str, callback):
         """
         Remove a listener
 
