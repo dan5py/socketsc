@@ -295,6 +295,21 @@ class ServerSocketWrapper:
         """
         return self.sc.connection
 
+    def shutdown(self, __how):
+        """
+        Shutdown the connection
+
+        :param __how: The shutdown mode
+        :return:
+        """
+        self.connection.shutdown(__how)
+
+    def close(self):
+        """
+        Close the connection
+        """
+        self.connection.close()
+
 
 class ThreadedTCPServer(socketserver.ThreadingMixIn, _TCPServer):
     """
