@@ -95,7 +95,7 @@ class SocketTCPRequestHandler(socketserver.StreamRequestHandler):
         client_manager = server.client_manager
         client_id = client_manager.add_client(self)
         client = client_manager.get_client(client_id)
-        server.event_manager.call_event("connection", client_id, self)
+        server.event_manager.call_event("connection", client_id, self, client.event_manager)
         try:
             while True:
                 raw_data = recv_msg(self.request)
@@ -112,7 +112,7 @@ class SocketTCPRequestHandler(socketserver.StreamRequestHandler):
             pass
         except Exception as err:
             if server.event_manager.has_event("error"):
-                server.event_manager.call_event("error", err, self)
+                server.event_manager.call_event("error", err, self, None)
             else:
                 raise err
         finally:
@@ -122,7 +122,7 @@ class SocketTCPRequestHandler(socketserver.StreamRequestHandler):
                 self.connection.close()
             except OSError:
                 pass
-            server.event_manager.call_event("disconnect", client_id, self)
+            server.event_manager.call_event("disconnect", client_id, self, None)
 
 
 class _TCPServer(socketserver.TCPServer):
