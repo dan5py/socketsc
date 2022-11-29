@@ -63,7 +63,7 @@ class SocketClient:
             self.close()
             self.event_manager.call_event("disconnect", None, self)
 
-    def emit(self, event, data):
+    def emit(self, event, data=None):
         """
         Emit an event
 

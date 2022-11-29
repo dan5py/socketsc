@@ -54,7 +54,7 @@ class SocketServer:
         """
         self.server.event_manager.add_event(event_name, event_exec)
 
-    def emit(self, event_name, data):
+    def emit(self, event_name, data=None):
         """
         Emit an event to all connected clients.
 
@@ -253,7 +253,7 @@ class ServerSocketWrapper:
     def __init__(self, sc: SocketTCPRequestHandler):
         self.sc = sc
 
-    def emit(self, event, data):
+    def emit(self, event, data=None):
         """
         Emit an event
 
