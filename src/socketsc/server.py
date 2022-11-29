@@ -292,18 +292,20 @@ class ServerSocketWrapper:
         """
         Remove a listener
 
-        :param event_name: The event name
+        :param event: The event name
+        :param callback: The function to remove
         :return:
         """
-        self.sc.server.event_manager.remove_listener(event_name)
+        self.event_manager.remove_listener(event, callback)
 
-    def remove_all_listeners(self):
+    def remove_all_listeners(self, event: str):
         """
         Remove all listeners
 
+        :param event: The event name
         :return:
         """
-        self.sc.server.event_manager.remove_all_listeners()
+        self.event_manager.remove_all_listeners(event)
 
     @property
     def client_address(self):
