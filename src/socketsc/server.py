@@ -112,8 +112,11 @@ class SocketTCPRequestHandler(socketserver.StreamRequestHandler):
                 raise err
         finally:
             client_manager.remove_client(client_id)
-            self.connection.shutdown(socket.SHUT_RDWR)
-            self.connection.close()
+            try:
+                self.connection.shutdown(socket.SHUT_RDWR)
+                self.connection.close()
+            except OSError:
+                pass
             server.event_manager.call_event("disconnect", client_id, self)
 
 
