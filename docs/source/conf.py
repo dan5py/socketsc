@@ -34,6 +34,7 @@ html_theme_options = {
     "sidebar_hide_name": True,
 }
 
+html_title = f"{project} {version} documentation"
 
 html_theme = 'furo'
 html_static_path = ['_static']
