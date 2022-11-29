@@ -3,6 +3,7 @@
 [![License](https://img.shields.io/pypi/l/socketsc)](https://pypi.org/project/socketsc/)
 [![Version](https://img.shields.io/pypi/v/socketsc)](https://pypi.org/project/socketsc/)
 [![Python](https://img.shields.io/pypi/pyversions/socketsc)](https://pypi.org/project/socketsc/)
+[![Documentation Status](https://readthedocs.org/projects/socketsc/badge/?version=latest)](https://socketsc.readthedocs.io/en/latest/?badge=latest)
 [![Downloads](https://img.shields.io/pypi/dm/socketsc)](https://pypi.org/project/socketsc/)
 [![Issues](https://img.shields.io/gitlab/issues/open/dan5py/socketsc)](https://gitlab.com/dan5py/socketsc/-/issues)
 
