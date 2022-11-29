@@ -104,6 +104,14 @@ class SocketClient:
         """
         self.event_manager.remove_all_listeners(event)
 
+    def shutdown(self, __how):
+        """
+        Shutdown the socket
+        :param __how: The shutdown mode
+        :return:
+        """
+        self.socket.shutdown(__how)
+
     def close(self):
         """
         Close the socket
