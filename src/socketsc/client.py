@@ -52,7 +52,7 @@ class SocketClient:
                 [event, data] = json.loads(data.decode("utf-8"))
                 self.event_manager.call_event(event, data, self)
                 self.event_manager.call_event("message", (event, data), self)
-        except (ConnectionResetError, BrokenPipeError):
+        except (ConnectionResetError, ConnectionAbortedError, BrokenPipeError):
             pass
         except Exception as err:
             if self.event_manager.has_event("error"):

@@ -103,7 +103,7 @@ class SocketTCPRequestHandler(socketserver.StreamRequestHandler):
                 [event, data] = json.loads(raw_data.decode("utf-8"))
                 server.event_manager.call_event(event, data, self)
                 server.event_manager.call_event("message", (event, data), self)
-        except (ConnectionResetError, BrokenPipeError):
+        except (ConnectionResetError, ConnectionAbortedError, BrokenPipeError):
             pass
         except Exception as err:
             if server.event_manager.has_event("error"):
