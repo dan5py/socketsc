@@ -4,10 +4,9 @@ from typing import Callable, Any
 import uuid
 import socketserver
 import socket
-import json
 
 from .constants import *
-from .utils import recv_msg, send_msg
+from .packet import SocketPacket
 
 __all__ = [
     'SocketServer',
@@ -17,6 +16,7 @@ __all__ = [
     'ClientManager',
     'ThreadedTCPServer'
 ]
+
 
 class SocketServer:
     """
@@ -98,10 +98,12 @@ class SocketTCPRequestHandler(socketserver.StreamRequestHandler):
         server.event_manager.call_event("connection", client_id, self, client.event_manager)
         try:
             while True:
-                raw_data = recv_msg(self.request)
-                if not raw_data:
+                sock_packet = SocketPacket.unpack(self.request)
+                if not sock_packet:
                     break
-                [event, data] = json.loads(raw_data.decode("utf-8"))
+                event = sock_packet.event
+                data = sock_packet.data
+
                 # Global event
                 server.event_manager.call_event(event, data, self, client.event_manager)
                 # Local event only for this client
@@ -275,8 +277,7 @@ class ServerSocketWrapper:
         :param data: The data to send
         :return:
         """
-        json_data = json.dumps([event, data])
-        send_msg(self.sc.request, json_data.encode("utf-8"))
+        self.sc.request.sendall(SocketPacket(event, data).pack())
 
     def on(self, event: str, event_exec: Callable[[ServerSocketWrapper, Any], Any]):
         """

@@ -3,10 +3,9 @@ from typing import Callable, Any
 
 import socket
 import threading
-import json
 
 from .constants import *
-from .utils import recv_msg, send_msg
+from .packet import SocketPacket
 
 
 __all__ = [
@@ -46,10 +45,11 @@ class SocketClient:
             while True:
                 if not self.connected:
                     break
-                data = recv_msg(self.socket)
-                if not data:
+                sock_packet = SocketPacket.unpack(self.socket)
+                if not sock_packet:
                     break
-                [event, data] = json.loads(data.decode("utf-8"))
+                event = sock_packet.event
+                data = sock_packet.data
                 self.event_manager.call_event(event, data, self)
                 self.event_manager.call_event("message", (event, data), self)
         except (ConnectionResetError, ConnectionAbortedError, BrokenPipeError):
@@ -72,8 +72,7 @@ class SocketClient:
         :return:
         """
         self.connection_event.wait()
-        json_data = json.dumps([event, data])
-        send_msg(self.socket, json_data.encode("utf-8"))
+        self.socket.sendall(SocketPacket(event, data).pack())
 
     def on(self, event, callback):
         """

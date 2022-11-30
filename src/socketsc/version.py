@@ -1,1 +1,1 @@
-version = tag = "1.7"
+version = tag = "1.8"
