@@ -136,6 +136,16 @@ class _TCPServer(socketserver.TCPServer):
         super().__init__(server_address, RequestHandlerClass, bind_and_activate)
 
 
+class Client:
+    """
+    Client wrapper.
+    """
+    def __init__(self, sc: SocketTCPRequestHandler, event_manager: ServerEventManager, client_id: str):
+        self.sc = sc
+        self.event_manager = event_manager
+        self.id = client_id
+
+
 class ClientManager:
     """
     Manager for client connections. Each client
