@@ -94,8 +94,8 @@ class SocketTCPRequestHandler(socketserver.StreamRequestHandler):
         server: ThreadedTCPServer = self.server
         client_manager = server.client_manager
         client_id = client_manager.add_client(self)
-        client = client_manager.get_client(client_id)
-        server.event_manager.call_event("connection", client_id, self, client.event_manager)
+        client = client_manager.get_client(client_id).client
+        server.event_manager.call_event("connection", client_id, client)
         try:
             while True:
                 sock_packet = SocketPacket.unpack(self.request)
@@ -105,16 +105,16 @@ class SocketTCPRequestHandler(socketserver.StreamRequestHandler):
                 data = sock_packet.data
 
                 # Global event
-                server.event_manager.call_event(event, data, self, client.event_manager)
+                server.event_manager.call_event(event, data, client)
                 # Local event only for this client
-                client.event_manager.call_event(event, data, self, client.event_manager)
+                client.event_manager.call_event(event, data, client)
                 # Global message event
-                server.event_manager.call_event("message", (event, data), self, client.event_manager)
+                server.event_manager.call_event("message", (event, data), client)
         except (ConnectionResetError, ConnectionAbortedError, BrokenPipeError):
             pass
         except Exception as err:
             if server.event_manager.has_event("error"):
-                server.event_manager.call_event("error", err, self, None)
+                server.event_manager.call_event("error", err, client)
             else:
                 raise err
         finally:
@@ -124,7 +124,7 @@ class SocketTCPRequestHandler(socketserver.StreamRequestHandler):
                 self.connection.close()
             except OSError:
                 pass
-            server.event_manager.call_event("disconnect", client_id, self, None)
+            server.event_manager.call_event("disconnect", client_id, client)
 
 
 class _TCPServer(socketserver.TCPServer):
@@ -162,7 +162,7 @@ class ClientManager:
         :return: The client uid
         """
         client_id = uuid.uuid4().hex
-        self.clients[client_id] = (client, ServerEventManager())
+        self.clients[client_id] = Client(client, ServerEventManager(), client_id)
         return client_id
 
     def remove_client(self, client_id):
@@ -183,7 +183,7 @@ class ClientManager:
         """
 
         if client_id in self.clients:
-            return ServerSocketWrapper(sc=self.clients[client_id][0], event_manager=self.clients[client_id][1])
+            return ServerSocketWrapper(self.clients[client_id])
         return None
 
     def get_clients(self):
@@ -192,7 +192,7 @@ class ClientManager:
 
         :return: The connected clients
         """
-        return [ServerSocketWrapper(sc=client[0], event_manager=client[1]) for client in self.clients.values()]
+        return [ServerSocketWrapper(client) for client in self.clients.values()]
 
 
 class ServerEventManager:
@@ -225,20 +225,18 @@ class ServerEventManager:
         current_events.append(event_exec)
         self.events[event_name] = current_events.copy()
 
-    def call_event(self, event_name: str, data: Any, connection: SocketTCPRequestHandler,
-                   event_manager: ServerEventManager = None):
+    def call_event(self, event_name: str, data: Any, client: Client):
         """
         Call all the functions registered on the given event
 
         :param event_name: The event name
         :param data: The data to pass to the functions
-        :param connection: The socket connection
-        :param event_manager: The event manager for the client
+        :param client: The client (see Client class)
         :return:
         """
         current_events: list = self.events.get(event_name, [])
         for event in current_events:
-            event(ServerSocketWrapper(connection, event_manager), data)
+            event(ServerSocketWrapper(client), data)
 
     def remove_listener(self, event_name: str, event_exec: Callable[[ServerSocketWrapper, Any], Any]):
         """
@@ -275,9 +273,8 @@ class ServerSocketWrapper:
     Wrapper for SocketTCPRequestHandler.
     This class is used when an event is called on server side.
     """
-    def __init__(self, sc: SocketTCPRequestHandler, event_manager: ServerEventManager):
-        self.sc = sc
-        self.event_manager = event_manager
+    def __init__(self, client: Client):
+        self.client = client
 
     def emit(self, event, data=None):
         """
@@ -287,7 +284,7 @@ class ServerSocketWrapper:
         :param data: The data to send
         :return:
         """
-        self.sc.request.sendall(SocketPacket(event, data).pack())
+        self.client.sc.request.sendall(SocketPacket(event, data).pack())
 
     def on(self, event: str, event_exec: Callable[[ServerSocketWrapper, Any], Any]):
         """
@@ -297,7 +294,7 @@ class ServerSocketWrapper:
         :param event_exec: The function to execute
         :return:
         """
-        self.event_manager.add_event(event, event_exec)
+        self.client.event_manager.add_event(event, event_exec)
 
     def remove_listener(self, event: str, callback):
         """
@@ -307,7 +304,7 @@ class ServerSocketWrapper:
         :param callback: The function to remove
         :return:
         """
-        self.event_manager.remove_listener(event, callback)
+        self.client.event_manager.remove_listener(event, callback)
 
     def remove_all_listeners(self, event: str):
         """
@@ -316,21 +313,28 @@ class ServerSocketWrapper:
         :param event: The event name
         :return:
         """
-        self.event_manager.remove_all_listeners(event)
+        self.client.event_manager.remove_all_listeners(event)
 
     @property
     def client_address(self):
         """
         The client address of the connection
         """
-        return self.sc.client_address
+        return self.client.sc.client_address
+
+    @property
+    def client_id(self):
+        """
+        The client id
+        """
+        return self.client.id
 
     @property
     def connection(self):
         """
         The socket connection object
         """
-        return self.sc.connection
+        return self.client.sc.connection
 
     def shutdown(self, __how):
         """
