@@ -46,3 +46,10 @@ Example of a simple client:
 And a simple server:
 
 .. literalinclude:: ../../example/server.py
+
+
+.. toctree::
+   :hidden:
+
+   getting-started/index
+   references/index
