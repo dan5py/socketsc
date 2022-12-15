@@ -48,6 +48,8 @@ And a simple server:
 .. literalinclude:: ../../example/server.py
 
 
+:doc:`Let's get started! <getting-started/index>`
+
 .. toctree::
    :hidden:
 

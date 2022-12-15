@@ -88,7 +88,7 @@ class SocketServer:
 
 class SocketTCPRequestHandler(socketserver.StreamRequestHandler):
     """
-    The request handler for TCP socker server
+    The request handler for TCP socket server
     """
     def handle(self):
         server: ThreadedTCPServer = self.server

@@ -7,7 +7,7 @@ Requirements
 
 .. important::
 
-    ``socketsc`` requires Python ≥ 3.7.
+    ``socketsc`` requires Python ≥ 3.8.
 
 .. _install:
 
@@ -23,7 +23,7 @@ Install socktesc with:
 Tutorial
 --------
 
-Learn how to build an real-time web application with websockets.
+Learn how to build a client and a server application with socketsc.
 
 .. toctree::
 
