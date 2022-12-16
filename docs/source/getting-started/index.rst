@@ -30,3 +30,4 @@ Learn how to build a client and a server application with socketsc.
     server
     client
     removelisteners
+    default_events
