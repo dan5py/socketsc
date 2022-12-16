@@ -30,6 +30,7 @@ exclude_patterns = []
 html_logo = "_static/logo.svg"
 html_favicon = "_static/favicon.ico"
 
+html_show_sphinx = False
 html_theme_options = {
     "sidebar_hide_name": True,
 }

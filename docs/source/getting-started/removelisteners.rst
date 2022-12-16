@@ -1,7 +1,7 @@
 Removing events
 ==========================
 
-Sometime you might need to remove a registered event. This can be done in two ways.
+Sometimes you might need to remove a registered event. This can be done in two ways.
 
 
 Removing all callbacks of a specific event name
